@@ -1,133 +1,230 @@
-
 # ASCII Art Web 🖥️🎨
 
 ## Description
-**ASCII Art Web** is a Go web application that provides a browser-based graphical interface for the `ascii-art` project.  
-It allows users to input text, choose a banner (font style), and generate ASCII art directly from their browser.
+**ASCII Art Web** is a Go web application that provides a browser-based graphical interface for generating ASCII art. It allows users to input text, choose a banner style, and instantly generate ASCII art directly from their web browser.
 
-The app serves a simple web page with an input form, where users can:
-- Type any text they want to convert.
-- Select one of the available banners: `standard`, `shadow`, or `thinkertoy`.
-- Click a button to generate the result using the Go backend.
+The application serves an interactive web page where users can:
+- Type any text they want to convert to ASCII art
+- Select from available banner styles: `standard`, `shadow`, or `thinkertoy`
+- View the generated ASCII art in real-time
+- Copy or download the results
 
 ---
 
-## Usage
+## Features ✨
 
-### 🧩 Prerequisites
-Make sure you have **Go** installed:
-```bash
-go version
-````
+### 🎨 Web Interface
+- Clean, responsive web interface with intuitive controls
+- Real-time ASCII art generation
+- Horizontal scrolling for wide ASCII art outputs
+- Dark/light theme friendly design
 
-### 🚀 How to Run
+### 🔒 Robust Error Handling
+- **200 OK** – Successful ASCII art generation
+- **400 Bad Request** – Invalid input or unsupported characters
+- **404 Not Found** – Banner file not found or template missing
+- **405 Method Not Allowed** – Invalid HTTP method used
+- **500 Internal Server Error** – Server-side errors or corrupted banner files
 
-Clone the repository and start the web server:
+### 🛡️ Banner Integrity Protection
+- **SHA-256 hash verification** of banner files
+- **Strict validation** of ASCII art character structure
+- **Automatic detection** of modified or corrupted banner files
+- **Character-by-character integrity checks**
 
+### 🌐 Multi-Banner Support
+- **Standard** – Classic ASCII art style
+- **Shadow** – Text with shadow effect
+- **Thinkertoy** – Bold, blocky style
+
+---
+
+## Prerequisites 📋
+
+### Required Software
+- **Go 1.21** or higher
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+
+### File Requirements
+The following banner files must exist in the `banners/` directory:
+- `standard.txt`
+- `shadow.txt`
+- `thinkertoy.txt`
+
+---
+
+## Installation & Setup 🚀
+
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/yourusername/ascii-art-web.git
 cd ascii-art-web
-go run .
 ```
 
-After starting, open your browser and go to:
+### 2. Generate Banner Hashes (First Time Only)
+```bash
+# Edit main.go to call GenerateBannerHashes()
+# Then run:
+go run main.go 
+# Copy the generated hashes into ascii/hashes.go
+```
 
+### 3. Start the Web Server
+```bash
+go run main.go web.go
+```
+
+### 4. Access the Application
+Open your browser and navigate to:
 ```
 http://localhost:8080
 ```
 
-You’ll see the ASCII Art generator page.
+---
+
+## API Endpoints 🔌
+
+### `GET /`
+- **Description**: Serves the main HTML interface
+- **Responses**:
+  - `200 OK` – HTML page served successfully
+  - `404 Not Found` – HTML template file missing
+  - `500 Internal Server Error` – Template parsing error
+
+### `GET /generate`
+- **Description**: Generates ASCII art from provided text
+- **Query Parameters**:
+  - `text` (required) – Text to convert to ASCII art
+  - `banner` (optional, default: `standard`) – Banner style to use
+- **Responses**:
+  - `200 OK` – ASCII art returned as plain text
+  - `400 Bad Request` – Missing text parameter or unsupported characters
+  - `404 Not Found` – Banner file not found
+  - `405 Method Not Allowed` – If called with POST instead of GET
+  - `500 Internal Server Error` – Banner file corrupted or server error
 
 ---
 
-## Implementation Details
+## Character Support 🔤
 
-### 📁 Project Structure
+### ✅ Supported Characters
+- All printable ASCII characters (codes 32-126)
+- Line breaks (`\n`)
+- Space characters
 
-```
-ascii-art-web/
-├── ascii/
-│   ├── ascii.go           # ASCII art generation logic
-├── banners/
-│   ├── standard.txt
-│   ├── shadow.txt
-│   ├── thinkertoy.txt
-├── static/
-│   ├── index.html         # Main web page
-├── web.go                 # HTTP server and route handlers
-└── README.md
-```
-
-### ⚙️ Endpoints
-
-#### `GET /`
-
-* **Description:** Serves the main HTML page.
-* **Response:** 200 OK if successful.
-* **Errors:**
-
-  * 404 Not Found – if the HTML template is missing.
-  * 500 Internal Server Error – if an unexpected error occurs.
-
-#### `POST /ascii-art`
-
-* **Description:** Accepts user input (`text` and `banner`), generates ASCII art, and returns it.
-* **Request Body:**
-
-  * `text` — The input string to be converted.
-  * `banner` — One of the available fonts (`standard`, `shadow`, `thinkertoy`).
-* **Response:**
-
-  * 200 OK – Returns ASCII art as plain text.
-  * 400 Bad Request – Invalid or unsupported input.
-  * 404 Not Found – Banner not found.
-  * 500 Internal Server Error – For unhandled server errors.
+### ❌ Unsupported Characters
+- Cyrillic letters (Russian, Ukrainian, etc.)
+- Asian characters (Chinese, Japanese, Korean)
+- Arabic script
+- Emoji and special symbols
+- Characters with diacritical marks (é, ñ, ü, etc.)
 
 ---
 
-## 🧠 Algorithm Overview
+## Error Scenarios & Handling ⚠️
 
-1. The banner file (font) is loaded from the `/banners` directory.
-2. The input text is split into lines (`\n`).
-3. Each printable ASCII character (from 32 to 126) is matched to its 8-line representation in the banner.
-4. Lines are combined into a full ASCII art output using string builders.
-5. The result is sent back as plain text to the web page, which displays it inside a `<pre>` block with horizontal scrolling.
+### Common Error Responses
+
+#### 400 Bad Request
+- Empty text input
+- Non-ASCII characters detected
+- Malformed input parameters
+
+#### 404 Not Found
+- Requested banner file doesn't exist
+- HTML template file missing
+
+#### 405 Method Not Allowed
+- Using POST method on `/` endpoint
+- Using GET method where POST is expected
+
+#### 500 Internal Server Error
+- Banner file has been modified or corrupted
+- Banner file has incorrect structure
+- Internal server processing errors
+- Banner hash verification failed
+
+### Banner Integrity Errors
+The system performs multiple checks on banner files:
+1. **SHA-256 Hash Verification** – Detects any file modifications
+2. **Structure Validation** – Ensures 9 lines per character
+3. **Character Consistency** – Verifies internal character formatting
+4. **Content Validation** – Ensures only valid ASCII art characters are used
 
 ---
 
-## 💡 Features
+## Technical Details 🔧
 
-* Web GUI with a clean and simple interface.
-* Support for three different banners: `standard`, `shadow`, and `thinkertoy`.
-* Graceful error handling with proper HTTP status codes:
+### ASCII Art Generation Algorithm
+1. **Banner Loading** – Font file is loaded and validated
+2. **Text Processing** – Input is split by line breaks
+3. **Character Mapping** – Each character maps to its 9-line representation
+4. **Line Assembly** – Characters are combined horizontally
+5. **Output Formatting** – Proper spacing and line breaks are added
 
-  * `200 OK`
-  * `400 Bad Request`
-  * `404 Not Found`
-  * `500 Internal Server Error`
-* Horizontal scroll support for long ASCII art lines.
-* Built entirely in **Go**, using `html/template` and standard libraries.
+### Banner File Requirements
+- Each character must occupy exactly 9 lines
+- 95 total characters (ASCII 32-126)
+- Space character (ASCII 32) must be completely empty
+- All lines within a character must have consistent width
+- Only valid ASCII art drawing characters are allowed
 
 ---
 
-## 🧭 Example
+## Development 🛠️
 
-### Request:
+### Adding New Banners
+1. Place new banner file in `banners/` directory
+2. Add banner name to validation logic
+3. Generate and add SHA-256 hash to `hashes.go`
+4. Update banner selection in `index.html`
 
-```
-POST /ascii-art
-text=Hello
-banner=shadow
-```
-
-### Response:
-
-```
-_|    _|          _| _|
-_|    _|   _|_|   _| _|    _|_|
-_|_|_|_| _|_|_|_| _| _|  _|    _|
-_|    _| _|       _| _|  _|    _|
-_|    _|   _|_|_| _| _|    _|_|
+### Testing Banner Integrity
+```bash
+# Modify any banner file (add/remove space)
+# Restart server and attempt generation
+# Should receive 500 error with specific details
 ```
 
-# ascii-art-web
+### Running Tests
+```bash
+# Test with valid input
+curl "http://localhost:8080/generate?text=Hello&banner=standard"
+
+# Test error cases
+curl "http://localhost:8080/generate?text="
+curl "http://localhost:8080/generate?text=Привет"
+curl "http://localhost:8080/generate?text=test&banner=invalid"
+```
+
+---
+
+## Security Considerations 🔐
+
+### File Integrity
+- Banner files are verified with SHA-256 hashes
+- Any modification to banner files triggers 500 error
+- Prevents malicious or accidental file corruption
+
+### Input Validation
+- Strict character range checking (32-126 ASCII)
+- Parameter sanitization
+- Size limits on input text
+
+### Error Information
+- Detailed error messages for developers
+- Generic error messages for end users
+- No sensitive information leakage in errors
+
+---
+
+
+### Code Standards
+- Follow Go standard formatting
+- Include appropriate error handling
+- Add comments for complex logic
+- Update documentation as needed
+
+---
+
+**Happy ASCII Art Creating! 🎨✨**
