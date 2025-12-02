@@ -1,0 +1,156 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: url('/style/background.webp');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    font-family: sans-serif;
+    width: 100%;
+    text-align: center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 60%;
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+}
+
+.columns {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* выравнивание по верху */
+    gap: 20px;
+    /* расстояние между колонками */
+}
+
+.column {
+    flex: 1;
+    /* одинаковая ширина */
+    min-width: 0;
+    /* важно для корректного переноса и overflow */
+}
+
+@font-face {
+    font-family: 'brash_king';
+    src: url('/style/BrushKing-MVVPp.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1,
+h2 {
+    color: #2ba633;
+
+}
+
+h1 {
+    font-family: 'brash_king', sans-serif;
+    font-size: 48px;
+    display: block;
+    margin-top: 20px;
+}
+
+h2 {
+    font-size: 28px;
+    font-family: 'brash_king', sans-serif;
+    display: block;
+}
+
+select,
+button {
+    margin: 0.5em 0;
+
+}
+
+/* 
+label {
+    display: block;
+    margin: 7px;
+} */
+
+form {
+    margin: auto;
+    width: 100%;
+}
+
+textarea,
+pre {
+    background: #f5f5f5;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-height: 75px;
+    max-height: 300px;
+    width: 100%;
+    /* растягиваем на всю колонку */
+    box-sizing: border-box;
+    /* учитываем padding и border */
+    overflow-x: auto;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    /* горизонтальная прокрутка */
+    white-space: pre;
+    /* сохраняем все пробелы и переносы */
+    margin: 0 0 10px 0;
+    /* отступ снизу */
+}
+
+/*-----------------------------------------*/
+
+.form_radio_group {
+    display: inline-block;
+    overflow: hidden;
+}
+
+.form_radio_group-item {
+    display: inline-block;
+    float: left;
+}
+
+.form_radio_group input[type=radio] {
+    display: none;
+}
+
+.form_radio_group label {
+    display: inline-block;
+    cursor: pointer;
+    padding: 0px 15px;
+    line-height: 34px;
+    border: 1px solid #999;
+    border-right: none;
+    user-select: none;
+}
+
+.form_radio_group .form_radio_group-item:first-child label {
+    border-radius: 6px 0 0 6px;
+}
+
+.form_radio_group .form_radio_group-item:last-child label {
+    border-radius: 0 6px 6px 0;
+    border-right: 1px solid #999;
+}
+
+/* Checked */
+.form_radio_group input[type=radio]:checked+label {
+    background: #2ba633;
+}
+
+/* Hover */
+.form_radio_group label:hover {
+    color: #116617;
+}
+
+/* Disabled */
+.form_radio_group input[type=radio]:disabled+label {
+    background: #efefef;
+    color: #666;
+}

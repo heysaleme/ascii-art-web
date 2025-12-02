@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ASCII Art Web</title>
+
+  <link rel="stylesheet" href="/style/styles.css">
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>ASCII Art Generator</h1>
+
+    <div class="columns">
+
+      <div class="column">
+
+        <form action="/generate" method="get">
+
+          <h2>Text:</h2>
+          <textarea name="text" rows="4" cols="50">{{.Text}}</textarea><br>
+
+          <div class="form_radio_group">
+            <div class="form_radio_group-item">
+              <input id="radio-1" type="radio" name="banner" value="standard" {{if eq .Banner "standard"
+                }}checked{{end}}>
+              <label for="radio-1">Standard</label>
+            </div>
+            <div class="form_radio_group-item">
+              <input id="radio-2" type="radio" name="banner" value="shadow" {{if eq .Banner "shadow" }}checked{{end}}>
+              <label for="radio-2">Shadow</label>
+            </div>
+            <div class="form_radio_group-item">
+              <input id="radio-3" type="radio" name="banner" value="thinkertoy" {{if eq .Banner "thinkertoy"
+                }}checked{{end}}>
+              <label for="radio-3">Thinkertoy</label>
+            </div>
+          </div>
+          <br>
+          <button type="submit">Generate</button>
+        </form>
+
+      </div>
+
+      <div class="column">
+        <h2>Result:</h2>
+        <pre>{{.Result}}</pre>
+      </div>
+    </div>
+
+  </div>
+
+  </div>
+
+</body>
+
+</html>
