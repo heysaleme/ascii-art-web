@@ -1,5 +1,7 @@
 # ASCII Art Web 🖥️🎨
 
+![Главная страница](https://github.com/heysaleme/ascii-art-web/raw/main/screenshots/main-page.png)
+
 ## Description
 **ASCII Art Web** is a Go web application that provides a browser-based graphical interface for generating ASCII art. It allows users to input text, choose a banner style, and instantly generate ASCII art directly from their web browser.
 
