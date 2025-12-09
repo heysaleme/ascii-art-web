@@ -53,15 +53,27 @@
 
       <div class="column">
         <h2>Result:</h2>
-        <pre>{{.Result}}</pre>
-        <button type="submit">Generate</button>
-
+        <pre id="result">{{.Result}}</pre>
       </div>
     </div>
 
   </div>
 
   </div>
+  <script>
+    const copyBtn = document.getElementById("copyBtn");
+    const resultPre = document.getElementById("result");
+
+    if (copyBtn && resultPre) {
+      copyBtn.addEventListener("click", function () {
+        const text = resultPre.innerText;
+        navigator.clipboard.writeText(text)
+          .then(() => { alert("Copied!"); })
+          .catch(err => { console.error("Failed to copy:", err); });
+      });
+
+    }
+  </script>
 
 </body>
 
