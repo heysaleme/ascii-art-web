@@ -93,16 +93,14 @@ pre {
 textarea {
     resize: none;
     min-height: 120px;
-    /* можно подстроить */
     max-height: 120px;
     height: 120px;
 }
 
 pre {
-    min-height: 400px;
-    /* можно подстроить */
-    max-height: 400px;
-    height: 400px;
+    min-height: 200px;
+    max-height: 200px;
+    height: 200px;
 }
 
 button {
