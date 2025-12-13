@@ -92,15 +92,11 @@ pre {
 
 textarea {
     resize: none;
-    min-height: 120px;
-    max-height: 120px;
     height: 120px;
 }
 
 pre {
-    min-height: 200px;
-    max-height: 200px;
-    height: 200px;
+    height: 220px;
 }
 
 button {

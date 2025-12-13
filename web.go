@@ -8,8 +8,25 @@ import (
 	"ascii-art-web/ascii"
 )
 
+// Парсим шаблон ОДИН раз при старте приложения
+var tmpl = template.Must(
+	template.ParseFiles("static/index.html"),
+)
+
+type PageData struct {
+	Text   string
+	Banner string
+	Result string
+}
+
 func StartServer() error {
-	http.Handle("/style/", http.StripPrefix("/style/", http.FileServer(http.Dir("style"))))
+	// Статика
+	http.Handle("/style/", http.StripPrefix(
+		"/style/",
+		http.FileServer(http.Dir("style")),
+	))
+
+	// Роуты
 	http.HandleFunc("/", serveIndex)
 	http.HandleFunc("/generate", handleGenerate)
 	http.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {})
@@ -19,48 +36,35 @@ func StartServer() error {
 	return http.ListenAndServe(":8080", nil)
 }
 
-type PageData struct {
-	Text   string
-	Banner string
-	Result string
-}
-
 func serveIndex(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("static/index.html")
+	// Просто рендерим пустую страницу
+	err := tmpl.Execute(w, PageData{})
 	if err != nil {
-		http.Error(w, "Template not found", http.StatusNotFound)
-		return
+		http.Error(w, "Template execution error", http.StatusInternalServerError)
 	}
-
-	// Рендерим пустой результат
-	tmpl.Execute(w, PageData{Result: ""})
 }
 
 func handleGenerate(w http.ResponseWriter, r *http.Request) {
-	tmpl, err := template.ParseFiles("static/index.html")
-	if err != nil {
-		http.Error(w, "Template not found", http.StatusNotFound)
-		return
-	}
-
 	text := r.URL.Query().Get("text")
 	banner := r.URL.Query().Get("banner")
 	if banner == "" {
 		banner = "standard"
 	}
 
-	// Генерируем ASCII
+	// Генерация ASCII-art
 	resultText, err := ascii.GenerateASCII(text, "banners/"+banner+".txt")
 	if err != nil {
-		// Если ошибка, показываем её в поле результата
 		resultText = fmt.Sprintf("Error: %v", err)
 	}
 
-	tmpl.Execute(w, PageData{
+	err = tmpl.Execute(w, PageData{
 		Text:   text,
 		Banner: banner,
 		Result: resultText,
 	})
+	if err != nil {
+		http.Error(w, "Template execution error", http.StatusInternalServerError)
+	}
 }
 
 func handleNotFound(w http.ResponseWriter, r *http.Request) {
@@ -70,5 +74,9 @@ func handleNotFound(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintf(w, "404 Not Found: The page '%s' does not exist.\n", r.URL.Path)
+	fmt.Fprintf(
+		w,
+		"404 Not Found: The page '%s' does not exist.\n",
+		r.URL.Path,
+	)
 }
